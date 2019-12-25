@@ -1,0 +1,2 @@
+'/bin/bash': 3; '/usr/sbin/nologin': 33; '/bin/sync': 1; '/bin/false': 5; '/bin/sh': 1
+adm:102, 1001, cdrom:1001, sudo:1001, audio:115, dip:1001, plugdev:1001, lpadmin:1001, scanner:114, sambashare:1001
