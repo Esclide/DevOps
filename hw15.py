@@ -44,7 +44,10 @@ class Router:
         return 'Маршрут успешно добавлен'
 
     def delIpAddress(self, ipAddress):
-        ipInterface = ipaddress.ip_interface(ipAddress)
+        try:
+            ipInterface = ipaddress.ip_interface(ipAddress)
+        except ValueError:
+            return 'Введите корректный ip-адрес интерфейса'
         if ipInterface in self.listIpInterfaces:
             self.delIpRoute(ipInterface.network)
             self.listIpInterfaces.remove(ipInterface)
@@ -53,6 +56,11 @@ class Router:
 
     # Удаляем сам маршрут и дочерние маршруты
     def delIpRoute(self, network):
+        try:
+            network = ipaddress.ip_network(network)
+        except ValueError:
+            return 'Введите корректный ip-адрес интерфейса'
+
         counter = 0
         for route in self.listIpRoutes:
             if route[1] == network:
@@ -103,7 +111,6 @@ print(router.addIpRoute('173.16.8.1', '173.24.0.0/16'))
 
 print()
 router.printInfo()
-print()
 
 print(router.delIpAddress('192.168.5.14/24'))
 
