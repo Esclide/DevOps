@@ -79,6 +79,12 @@ class Router:
 
         return strAddresses
 
+    def getIpNetworks(self):
+        strAddresses = ''
+        for address in self.listIpInterfaces:
+            strAddresses += 'Маршрут до '+str(address.network) + ' через '+str(address) + '\n'
+        return strAddresses
+
     def getIpRoutes(self):
         strRoutes = ''
         for route in self.listIpRoutes:
@@ -87,13 +93,14 @@ class Router:
         return strRoutes[0:]
 
     def printInfo(self):
-        print("ip адреса на интерфейсах роутера:\n" + self.getIpAddresses())
-        print("Маршруты к подключенным сетям:\n" + self.getIpRoutes())
+        self.printIpAddresses()
+        self.printIpRoutes()
 
     def printIpAddresses(self):
         print("ip адреса на интерфейсах роутера:\n" + self.getIpAddresses())
 
     def printIpRoutes(self):
+        print("Маршруты к непосредственно подключенным сетям:\n" + self.getIpNetworks(), end='')
         print("Маршруты к подключенным сетям:\n" + self.getIpRoutes())
 
 

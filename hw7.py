@@ -10,6 +10,7 @@ for line in filePasswd:
     # Информация об UID
     dictUID[line.split(':')[0]] = line.split(':')[2]
 
+
 strShells = str(dictShells).strip('{, }').replace(',', ';')
 filePasswd.close()
 
@@ -23,6 +24,10 @@ for line in fileGroup:
         for user in line.split(':')[3].rstrip('\n').split(','):
             strUsers += dictUID[user] + ', '
         strGroups += strUsers
+    else:
+        strGroups += line.split(':')[0] + ':' + dictUID.get(line.split(':')[0], 'Не найдено') + ', '
+
+
 fileGroup.close()
 
 fileOut = open('output.txt', 'w')
