@@ -2,6 +2,7 @@ filePasswd = open('/etc/passwd', 'r')
 
 dictShells = {}
 dictUID = {}
+dictGUID = {}
 for line in filePasswd:
     # Информация об оболочках
     shell = line.split(':')[6].strip('\n')
@@ -9,7 +10,7 @@ for line in filePasswd:
 
     # Информация об UID
     dictUID[line.split(':')[0]] = line.split(':')[2]
-
+    dictGUID[line.split(':')[2]] = line.split(':')[3]
 
 strShells = str(dictShells).strip('{, }').replace(',', ';')
 filePasswd.close()
@@ -18,15 +19,22 @@ fileGroup = open('/etc/group', 'r')
 
 strGroups = ''
 for line in fileGroup:
-    if line.split(':')[3] != '\n':
+        counter = 0
         strGroups += line.split(':')[0] + ':'
         strUsers = ''
-        for user in line.split(':')[3].rstrip('\n').split(','):
-            strUsers += dictUID[user] + ', '
+        for key,value in dictGUID.items():
+            if value == line.split(':')[2]:
+                strUsers += key + ', '
+                counter = 1
         strGroups += strUsers
-    else:
-        strGroups += line.split(':')[0] + ':' + dictUID.get(line.split(':')[0], 'Не найдено') + ', '
-
+        if line.split(':')[3] != '\n':
+            strUsers = ''
+            for user in line.split(':')[3].rstrip('\n').split(','):
+                strUsers += dictUID[user] + ', '
+            strGroups += strUsers
+            counter = 1
+        if counter == 0:
+            strGroups += "отсутствует, "
 
 fileGroup.close()
 
