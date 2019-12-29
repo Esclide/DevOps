@@ -7,10 +7,7 @@ def problem9():
     print([(a, b, 1000-(a+b), 'sum = ' + str(a * b * (1000-(a+b)))) for a in range(500) for b in range(a) if
            a**2 + b**2 == (1000-(a+b))**2 ][0])
 
-    # Можно добавить функцию, вызывающую исключение и завершующую работу функции, если числа нашлись единожды
-    # Но задача была, как я поняла, в одну строку сделать
-
-
+    
 # Sum square difference
 def problem6():
     print("Разница равна " + str(sum(a for a in range(100)) ** 2 - sum(a * a for a in range(100))))
