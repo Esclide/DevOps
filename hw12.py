@@ -1,8 +1,9 @@
 def fib(n):
-    a, b = 1, 1
-    for i in range(n):
-        yield a
-        a, b = b, a + b
+    listFib = [1, 1]
+    for i in range(2, n):
+        listFib.append(listFib[i - 1] + listFib[i - 2])
+    return listFib
 
 
-print(list(fib(10)))
+print(fib(10))
+print(fib(100))

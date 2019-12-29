@@ -4,8 +4,8 @@ from functools import reduce
 
 # Special Pythagorean triplet
 def problem9():
-    print([(a, b, c, 'sum = ' + str(a * b * c)) for a in range(500) for b in range(500) for c in range(500) if
-           (a * a + b * b == c * c and a + b + c == 1000)][0])
+    print([(a, b, 1000-(a+b), 'sum = ' + str(a * b * (1000-(a+b)))) for a in range(500) for b in range(a) if
+           a**2 + b**2 == (1000-(a+b))**2 ][0])
 
     # Можно добавить функцию, вызывающую исключение и завершующую работу функции, если числа нашлись единожды
     # Но задача была, как я поняла, в одну строку сделать
@@ -27,7 +27,7 @@ def problem40():
     print(reduce(lambda x, y: int(x) * int(y), [strNumbers[10 ** a] for a in range(7)]))
 
 
-print("problem 9: (Она будет немножко долгой)")
+print("problem 9:")
 problem9()
 print("\nproblem 6:")
 problem6()
