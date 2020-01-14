@@ -128,3 +128,6 @@ WantedBy=multi-user.target
  
 sudo systemctl start myfile.service
 sudo systemctl enable myfile.service
+
+
+(Да, я знаю, что это все нужно было делать через SELinux или AppArmor, но как-то не пошло..)
