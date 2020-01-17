@@ -1,0 +1,133 @@
+Первая часть задания
+Папка с проектом хранится у основного пользователя annete
+
+sudo useradd R1 -c "first developer"
+sudo useradd R2 -c "second developer"
+sudo useradd R3 -c "third developer"
+sudo useradd R4 -c "fourth developer"
+sudo useradd R5 -c "fifth developer"
+
+sudo useradd I1 -c "first manager"
+sudo useradd I2 -c "second manager"
+sudo useradd I3 -c "third manager"
+
+sudo useradd A1 -c "first analyst"
+sudo useradd A2 -c "second analyst"
+sudo useradd A3 -c "third analyst"
+sudo useradd A4 -c "fourth analyst"
+
+sudo mkdir ~annete/Projects
+sudo mkdir ~annete//Projects/Proj1
+sudo mkdir ~annete//Projects/Proj2
+sudo mkdir ~annete//Projects/Proj3
+
+sudo groupadd Proj1
+sudo usermod -a -G Proj1 R2
+sudo usermod -a -G Proj1 R3
+sudo usermod -a -G Proj1 R5
+sudo usermod -a -G Proj1 A1
+
+sudo groupadd Proj2
+sudo usermod -a -G Proj2 R1
+sudo usermod -a -G Proj2 R5
+sudo usermod -a -G Proj2 A1
+
+sudo groupadd Proj3
+sudo usermod -a -G Proj3 R1
+sudo usermod -a -G Proj3 R2
+sudo usermod -a -G Proj3 R4
+sudo usermod -a -G Proj3 A2
+
+sudo chown root:Proj1 ~annete//Projects/Proj1/
+sudo chown root:Proj2 ~annete//Projects/Proj2/
+sudo chown root:Proj3 ~annete//Projects/Proj3/
+
+sudo chmod g+ws ~annete//Projects/Proj1/
+sudo chmod g+ws ~annete//Projects/Proj2/
+sudo chmod g+ws ~annete//Projects/Proj3/
+
+sudo chmod ou-rw ~annete//Projects/Proj1/
+sudo chmod ou-rw ~annete//Projects/Proj2/
+sudo chmod ou-rw ~annete//Projects/Proj3/
+
+sudo setfacl -m u:A4:rx ~annete//Projects/Proj1/
+sudo setfacl -m u:A2:rx ~annete//Projects/Proj2/
+sudo setfacl -m u:A3:rx ~annete//Projects/Proj2/
+sudo setfacl -m u:A1:rx ~annete//Projects/Proj3/
+sudo setfacl -m u:A4:rx ~annete//Projects/Proj3/
+
+sudo groupadd InforManagers
+sudo usermod -a -G InforManagers I1
+sudo usermod -a -G InforManagers I2
+sudo usermod -a -G InforManagers I3
+
+sudo setfacl -m g:InforManagers:rwx ~annete//Projects/Proj1/
+sudo setfacl -m g:InforManagers:rwx ~annete//Projects/Proj2/
+sudo setfacl -m g:InforManagers:rwx ~annete//Projects/Proj3/
+
+sudo setfacl -m d:u::x ~annete//Projects/Proj1/
+sudo setfacl -m d:u::x ~annete//Projects/Proj2/
+sudo setfacl -m d:u::x ~annete//Projects/Proj3/
+sudo setfacl -m d:o::x ~annete//Projects/Proj1/
+sudo setfacl -m d:o::x ~annete//Projects/Proj2/
+sudo setfacl -m d:o::x ~annete//Projects/Proj3/
+ 
+
+Вторая часть задания
+
+1. Переопределим операцию удаления для I на перемещение в корзину
+
+joe /home/I1/.bashrc
+joe /home/I2/.bashrc
+joe /home/I3/.bashrc
+Всем в конец alias rm='sudo mv -t ~/trash/'
+
+2. Создадим скрипт, где будем отслеживать, не пытается ли этот менеджер что-нибудь удалить, если пытается - возвращаем
+
+/etc/init.d/myScript
+
+В нем:
+
+#!/bin/bash
+
+SRC_DIR="/home/annete/Projects"
+DST_DIR="/home/$USR/trash"
+USR=$(whoami)
+make_action(){
+mkdir -p /trash/$1
+cp -r /home/$USR/trash/$1 $SRC_DIR/$1$2
+}
+
+inotifywait -e moved_from —format '%w %f' -m -r $SRC_DIR |
+(
+while read
+do
+if grep "InfManagers" $(groups $(whoami))
+then
+(
+FILE=$(echo $REPLY | cut -f 2 -d' ')
+DIR=$(echo $(echo $REPLY | cut -f 1 -d' ') | cut -b 23-)
+make_action $DIR $FILE
+)
+fi
+done
+)
+
+3. Добавляем скрипт в автоматически запускаемые
+
+joe /etc/systemd/system/myfile.service
+
+в нем:
+
+[Unit]
+Description=opisanie
+[Service]
+ExecStart=/etc/init.d/myScript
+[Install]
+WantedBy=multi-user.target 
+ 
+sudo systemctl start myfile.service
+sudo systemctl enable myfile.service
+
+
+(Да, я знаю, что это все нужно было делать через SELinux или AppArmor, но как-то не пошло..)
