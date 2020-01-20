@@ -1,5 +1,4 @@
 from opencage.geocoder import OpenCageGeocode
-from pprint import pprint
 import requests
 
 
@@ -7,20 +6,32 @@ class Navigator:
     from opencage.geocoder import OpenCageGeocode
     import requests
 
-    def getAddrFromFile(self, path):
-        f = open(path, 'r')
+    def printAddrFromFile(self, path):
+        try:
+            f = open(path, 'r')
+        except FileNotFoundError:
+            print("Файл с данным названием не найден")
+            return
         lines = f.readlines()
         f.close()
-        for line in lines:
-            x, y = line.split(' ')[0].rstrip('\'').replace(',', '.'), line.split(' ')[1].rstrip('\'\n').replace(',',
+        try:
+            for line in lines:
+                x, y = line.split(' ')[0].rstrip('\'').replace(',', '.'), line.split(' ')[1].rstrip('\'\n').replace(',',
                                                                                                                 '.')
+        except IndexError:
+            print("В данном файле отсутствуют координаты")
+            return
+        for line in lines:
+            self.printAddrByCoordinates(x, y)
 
-            self.getAddrByCoordinates(x, y)
-
-    def getAddrByCoordinates(self, x, y):
+    def printAddrByCoordinates(self, x, y):
         apiKey = "c1d69c5a2f3c4266bc4297d5d8cb64fd"
         geocoder = OpenCageGeocode(apiKey)
-        results = geocoder.reverse_geocode(x, y)
+        try:
+            results = geocoder.reverse_geocode(x, y)
+        except Exception:
+            print("Неверный формат координат")
+            return
         print("Input data: " + str(x) + '; ' + str(y))
         if results == []:
             print("По данным координатам ничего не найдено")
@@ -42,5 +53,6 @@ class Navigator:
 
 if __name__ == '__main__':
     nav = Navigator()
-    nav.getAddrFromFile('Coordinates.txt')
+    nav.printAddrFromFile('Coordinates.txt')
+    nav.printAddrFromFile('HomeworkGit')
 

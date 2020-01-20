@@ -15,7 +15,7 @@ def getCoordinates(path):
                 name = GPSTAGS.get(key, key)
                 exif['GPSInfo'][name] = exif['GPSInfo'].pop(key)
         else:
-            return ("По данному фото невозможно определить координаты")
+            return False
 
 
     info = exif['GPSInfo']
@@ -34,8 +34,16 @@ def getCoordinates(path):
             return [info['Latitude'], info['Longitude']]
 
 
+def printAddressByPhoto(path):
+    coordinates = (getCoordinates(path))
+    if not coordinates:
+        print("Файл: {}\nПо данному фото невозможно определить координаты\n".format(path))
+        return
+    nav = Navigator()
+    print("Файл: {}".format(path))
+    nav.printAddrByCoordinates(coordinates[0], coordinates[1])
+
+printAddressByPhoto('photo.jpg')
+printAddressByPhoto('photo1.jpg')
 
 
-coordinates =  (getCoordinates('photo1.jpg'))
-nav = Navigator()
-nav.getAddrByCoordinates(coordinates[0], coordinates[1])
