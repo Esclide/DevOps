@@ -7,7 +7,7 @@ def problem9():
     print([(a, b, 1000-(a+b), 'sum = ' + str(a * b * (1000-(a+b)))) for a in range(500) for b in range(a) if
            a**2 + b**2 == (1000-(a+b))**2 ][0])
 
-    
+
 # Sum square difference
 def problem6():
     print("Разница равна " + str(sum(a for a in range(100)) ** 2 - sum(a * a for a in range(100))))
@@ -15,7 +15,7 @@ def problem6():
 
 # Self powers
 def problem48():
-    print("Последние 10 цифр суммы: " + str(sum(a ** a for a in range(1000)))[-10:])
+    print("Последние 10 цифр суммы: " + str(sum(a ** a for a in range(1001))-1)[-10:])
 
 
 # Champernowne's constant
