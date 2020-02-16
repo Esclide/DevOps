@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Запуск данного скрипта осуществляется через 'sudo bash linux_hw1.txt'
+
+# Создание структуры каталогов ftp сервера
+
+mkdir -p /var/ftp/{user1,user2,user3,manager}
+
+# Создаем группы и пользователей системы
+
+groupadd workers 
+groupadd managers
+for i in "user1 1 workers" "user2 2" "user3 3" "manager 4"; do
+set -- $i
+useradd -d /var/ftp/$1 -G workers $1
+echo "$1:$2" | chpasswd
+chown $1:managers /var/ftp/$1
+
+done
+usermod -a -G managers manager
+
+# Настроим права на файлы:
+# -создатель (пользователь) - rwx права
+# -группа (привилегированные пользователи) - rwx права
+# -другие пользователи прав не имеют
+
+chmod g+w /var/ftp/*
+chmod o-rx /var/ftp/*
+
+# Наследование группы и права по умолчанию
+
+chmod g+s /var/ftp/*
+setfacl -m d:u::rwx /var/ftp/*
+setfacl -m d:g::rwx /var/ftp/*
+setfacl -m d:o::--- /var/ftp/*
+
+

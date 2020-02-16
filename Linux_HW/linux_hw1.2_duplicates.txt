@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# если не установлено:
+sudo apt install rdfind
+
+echo -n "Введите путь для поиска дубликатов файлов "
+
+read path
+
+sudo rdfind -makehardlinks true $path
+
